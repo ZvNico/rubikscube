@@ -30,7 +30,7 @@ void horizontal_rotation(Rubiks **);
 
 void vertical_rotation(Rubiks **);
 
-void move_rubiks(Rubiks*);
+void move_rubiks(Rubiks**);
 
-void perfect_cross(Rubiks*);
+void perfect_cross(Rubiks**);
 #endif //RUBIKSCUBE_RUBIKS_H

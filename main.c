@@ -6,6 +6,8 @@ int main() {
     Rubiks **rubiks = create_rubiks();
     init_rubiks(rubiks);
     display_rubiks(rubiks);
+    scramble_rubiks(rubiks);
+    display_rubiks(rubiks);
     while (1) {
         move_rubiks(rubiks);
         display_rubiks(rubiks);

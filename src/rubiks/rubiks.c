@@ -1,12 +1,12 @@
 #include "stdlib.h"
 #include "rubiks.h"
+#include <time.h>
 #include "stdio.h"
 
 
 Rubiks **create_rubiks() {
     Rubiks **rubiks = (Rubiks **) malloc(6 * sizeof(Rubiks));
     T_SIDE order[] = {LEFT, UP, FRONT, DOWN, RIGHT, BACK};
-    int pos;
     for (int i = 0; i < 6; i++) {
         rubiks[i] = (Rubiks *) malloc(sizeof(Rubiks));
         rubiks[i]->Type_face = order[i];
@@ -263,12 +263,12 @@ void horizontal_rotation(Rubiks **rubiks) {
     Rubiks *ptr;
 
     ptr = rubiks[side_to_index(FRONT)];
-    rubiks[side_to_index(BACK)] = rubiks[side_to_index(FRONT)];
-    rubiks[side_to_index(FRONT)] = ptr;
+    rubiks[side_to_index(FRONT)] = rubiks[side_to_index(BACK)];
+    rubiks[side_to_index(BACK)] = ptr;
 
     ptr = rubiks[side_to_index(LEFT)];
-    rubiks[side_to_index(RIGHT)] = rubiks[side_to_index(LEFT)];
-    rubiks[side_to_index(LEFT)] = ptr;
+    rubiks[side_to_index(LEFT)] = rubiks[side_to_index(RIGHT)];
+    rubiks[side_to_index(RIGHT)] = ptr;
 
     // rotation 90° du coté 'side'
     int temp, i, j, k;
@@ -290,15 +290,28 @@ void vertical_rotation(Rubiks **rubiks) {
     Rubiks *ptr;
 
     ptr = rubiks[side_to_index(FRONT)];
-    rubiks[side_to_index(BACK)] = rubiks[side_to_index(FRONT)];
-    rubiks[side_to_index(FRONT)] = ptr;
+    rubiks[side_to_index(FRONT)] = rubiks[side_to_index(BACK)];
+    rubiks[side_to_index(BACK)] = ptr;
 
     ptr = rubiks[side_to_index(UP)];
-    rubiks[side_to_index(DOWN)] = rubiks[side_to_index(UP)];
-    rubiks[side_to_index(UP)] = ptr;
+    rubiks[side_to_index(UP)] = rubiks[side_to_index(DOWN)];
+    rubiks[side_to_index(DOWN)] = ptr;
+    int temp, i, j, k;
+    T_SIDE sides[] = {LEFT, RIGHT, FRONT, BACK};
+    for (k = 0; k < 2; k++) {
+        for (i = 0; i < 2; i++) {
+            for (j = 0; j < 2; j++) {
+                temp = (*rubiks[side_to_index(sides[k])]).Face[j][2];
+                rubiks[side_to_index(sides[k])]->Face[j][2] = rubiks[side_to_index(sides[k])]->Face[0][j];
+                rubiks[side_to_index(sides[k])]->Face[0][j] = rubiks[side_to_index(sides[k])]->Face[2 - j][0];
+                rubiks[side_to_index(sides[k])]->Face[2 - j][0] = rubiks[side_to_index(sides[k])]->Face[2][2 - j];
+                rubiks[side_to_index(sides[k])]->Face[2][2 - j] = temp;
+            }
+        }
+    }
 }
 
-void move_rubiks(Rubiks *rubiks) {
+void move_rubiks(Rubiks **rubiks) {
     int input, type, s, i;
     char side;
     char *side_initial = "FBUDRL";
@@ -327,12 +340,27 @@ void move_rubiks(Rubiks *rubiks) {
             side_antilockwise(rubiks, type, s);
         }
     } else if (input == 3) {
-        horizontal_rotation(&rubiks);
+        horizontal_rotation(rubiks);
     } else {
-        vertical_rotation(&rubiks);
+        vertical_rotation(rubiks);
     }
 }
 
-void perfect_cross(Rubiks *rubiks) {
+void scramble_rubiks(Rubiks **rubiks) {
+    void *(*moove_func1)(Rubiks **) = {&horizontal_rotation, &vertical_rotation};
+    void *(*moove_func2)(Rubiks **, int, T_SIDE) = {&side_clockwise, &side_antilockwise};
+    int i = rand() % 2;
+    printf("%d",i);
+    for (int j = 0; j < 50; j++) {
+        if (i) {
+            moove_func1(rubiks)[rand() % 2];
+        } else {
+            moove_func2(rubiks, rand() % 2, rand() % 6)[rand() % 2];
+        }
+    }
+}
+
+
+void perfect_cross(Rubiks **rubiks) {
 
 }
