@@ -347,15 +347,17 @@ void move_rubiks(Rubiks **rubiks) {
 }
 
 void scramble_rubiks(Rubiks **rubiks) {
-    void *(*moove_func1)(Rubiks **) = {&horizontal_rotation, &vertical_rotation};
-    void *(*moove_func2)(Rubiks **, int, T_SIDE) = {&side_clockwise, &side_antilockwise};
-    int i = rand() % 2;
-    printf("%d",i);
+    void (*moove_func1[])(Rubiks **) = {&horizontal_rotation, &vertical_rotation};
+    void (*moove_func2[])(Rubiks **, int, T_SIDE) = {&side_clockwise, &side_antilockwise};
+    int i;
     for (int j = 0; j < 50; j++) {
+        i = rand() % 2;
         if (i) {
-            moove_func1(rubiks)[rand() % 2];
+            printf("func 1 \n");
+            moove_func1[rand() % 2](rubiks);
         } else {
-            moove_func2(rubiks, rand() % 2, rand() % 6)[rand() % 2];
+            printf("func 2 \n");
+            moove_func2[rand() % 2](rubiks, rand() % 2, rand() % 6);
         }
     }
 }
